@@ -1,0 +1,29 @@
+---
+- name: Configure EC2 Instances
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install Apache
+      become: yes
+      apt:
+        name: apache2
+        state: present
+
+    - name: Set Timezone to Africa/Lagos
+      become: yes
+      environment:
+        TZ: "Africa/Lagos"
+      command: timedatectl set-timezone Africa/Lagos
+
+    - name: Create HTML Page
+      become: yes
+      copy:
+        content: "<html><body><h1>Hello from Ansible!</h1></body></html>"
+        dest: /var/www/html/index.html
+
+    - name: Restart Apache
+      become: yes
+      service:
+        name: apache2
+        state: restarted
